@@ -1,0 +1,371 @@
+// Place student's code here
+// Student's names: Dibyendu Mondal
+// Date last edited:
+/* Functionality provided (say what works):
+Created the 6-arcs caplet
+*/
+
+void b1(pt A, pt C, pt B, pt D, float a, float c){
+  beginShape(); 
+  stroke(#66A4E2);
+  fill(#CCCCCC);
+  vec CB = V(C,B);
+  vec T = R(U(A,B));
+  float radius = (c*c - n2(CB))/(2 * dot(CB,T));
+  vec BQ = T; BQ.scaleBy(radius);
+  pt Q = P(B,BQ);
+  float w = atan(radius/c);
+  vec CM = R(U(C,Q),w).scaleBy(c);
+  pt M = P(C,CM);
+  //drawCircleArcInHat(L,Q,M);
+  
+  vec AD = V(A,D);
+  T = R(U(C,D));
+  radius = (a*a - n2(AD))/(2 * dot(AD,T));
+  vec DP = T; DP.scaleBy(radius);
+  pt P = P(D,DP);
+  w = atan(radius/a);
+  vec AO = R(U(A,P),w).scaleBy(a);
+  pt O = P(A,AO);
+  //drawCircleArcInHat(R,P,O);
+  
+  stroke(#4C67E0);
+  float a0 = angle(V(A,O),V(A,B)), da=a0/40;
+  if (a0<0) {
+    a0 = (TWO_PI)+a0;
+    da = a0/60;
+  }
+  for (float x=0; x<=a0; x+=da) v(P(A,R(AO,x)));
+  
+  stroke(#23A356);
+  drawCircleArcInHat(B,Q,M);
+  
+  stroke(#DB2967);
+  float b = angle(V(C,M),V(C,D)), db=b/40;
+  if (b<0) {
+    b = (TWO_PI)+b;
+    db = b/60;
+  }
+  for (float x=0; x<=b; x+=db) v(P(C,R(CM,x))); 
+  
+  stroke(#D8A338);
+  drawCircleArcInHat(D,P,O);
+  v(O);
+  endShape();
+  M.show();
+  O.show();
+  A.show();
+  C.show();
+  Q.show();
+  P.show();
+  edge(B,Q);
+  edge(Q,M);
+}
+
+vec[] b2(pt A, pt C, pt B, pt D, pt E, pt F, float a, float c, int num)
+{
+  //pts first = new pts();
+  //first.declare();
+  //pts second = new pts();
+  //second.declare();
+  //pts third = new pts();
+  //third.declare();
+  
+  vec[] normals = new vec[6];
+  
+  beginShape();
+  stroke(#66A4E2);
+  fill(#EEEEEE);
+  
+  // BLUE ARC
+  vec EB = V(E,B);
+  vec T = R(U(A,B));
+  float radius = (0 - n2(EB))/(2 * dot(EB,T));
+  vec BQ = T; BQ.scaleBy(radius);
+  pt Q = P(B,BQ);
+  //show(Q);
+  vec QB = U(V(Q,B));
+  vec QE = U(V(Q,E));
+  float angle = angle(QB,QE)/2;
+  float x = radius*tan(angle);
+  pt X = P(B,R(QB).scaleBy(x));                  // center of arc BE
+  
+  normals[0] = U(A,B);                              // normal at B
+  normals[1] = U(X,E);                              // normal at E
+  
+  // GREEN ARC
+  vec T2 = U(Q,E);
+  vec CE = V(C,E);
+  radius = (c*c - n2(CE))/(2 * dot(CE,T2));
+  vec EQ = T2; EQ.scaleBy(radius);
+  pt Q2 = P(E,EQ);
+  float omega = atan(radius/c);
+  vec CM = R(U(C,Q2),omega).scaleBy(c);
+  pt M = P(C,CM);                                // other end of arc EM
+  //M.show();
+  vec Q2E = U(V(Q2,E));
+  vec Q2M = U(V(Q2,M));
+  angle = angle(Q2E,Q2M)/2;
+  float y = radius*tan(angle);
+  pt Y = P(E,R(Q2E).scaleBy(y));                  // center of arc EM
+  
+  normals[2] = U(Y,M);                              // normal at M
+  
+  // ORANGE ARC
+  vec FD = V(F,D);
+  T = R(U(C,D));
+  radius = (0 - n2(FD))/(2 * dot(FD,T));
+  vec DP = T; DP.scaleBy(radius);
+  pt P = P(D,DP);
+  
+  vec PD = U(V(P,D));
+  vec PF = U(V(P,F));
+  angle = angle(PD,PF)/2;
+  float z = radius*tan(angle);
+  pt Z = P(D,R(PD).scaleBy(z));                  // center of arc DF
+  //Z.show();
+  //float orangeArc = angle(U(V(Z,D)),U(V(Z,F)))*z;
+  
+  normals[3] = U(C,D);                              // normal at D
+  normals[4] = U(Z,F);                              // normal at F
+  
+  // PURPLE ARC
+  T2 = U(P,F);
+  vec AF = V(A,F);
+  radius = (a*a - n2(AF))/(2 * dot(AF,T2));
+  vec FP = T2; FP.scaleBy(radius);
+  pt P2 = P(F,FP);
+  omega = atan(radius/a);
+  vec AN = R(U(A,P2),omega).scaleBy(a);
+  pt N = P(A,AN);                              // other end of arc FN
+  //N.show();
+  vec P2F = U(V(P2,F));
+  vec P2N = U(V(P2,N));
+  angle = angle(P2F,P2N)/2;
+  float w = radius*tan(angle);
+  pt W = P(F,R(P2F).scaleBy(w));                // center of arc FN
+  //float purpleArc = angle(U(V(W,F)),U(V(W,N)))*w;
+  
+  normals[5] = U(W,N);                              // normal at N
+  
+  stroke(#4C67E0);
+  drawCircleArcInHat(B,Q,E);
+  
+  stroke(#23A356);
+  drawCircleArcInHat(E,Q2,M);
+  
+  // RED ARC
+  stroke(#DB2967);
+  float b = angle(V(C,M),V(C,D)), db=b/40;
+  if (b<0) {
+    b = (TWO_PI)+b;
+    db = b/60;
+  }
+  for (float i=0; i<=b; i+=db)
+  {
+    v(P(C,R(CM,i))); 
+    //second.addPt(P(C,R(CM,i)));
+  }
+  
+  //second.addPt(D);
+  
+  stroke(#D8A338);
+  drawCircleArcInHat(D,P,F);
+  
+  stroke(#DA90F4);
+  drawCircleArcInHat(F,P2,N);
+  
+  // YELLOW ARC
+  stroke(#EEF74F);
+  float a0 = angle(V(A,N),V(A,B)), da=a0/40;
+  if (a0<0) {
+    a0 = (TWO_PI)+a0;
+    da = a0/60;
+  }
+  for (float i=0; i<=a0; i+=da)
+  {
+    v(P(A,R(AN,i)));
+    //first.addPt(P(A,R(AN,i)));
+  }
+    
+  //first.addPt(B);
+  v(B);
+  endShape();
+  
+  stroke(black);
+  
+  if(num == 0)
+  {
+    centers0.G[0] = A;
+    centers0.G[1] = X;
+    centers0.G[2] = Y;
+    centers0.G[3] = C;
+    centers0.G[4] = Z;
+    centers0.G[5] = W;
+    
+    control0.G[0] = B;
+    control0.G[1] = E;
+    control0.G[2] = M;
+    control0.G[3] = D;
+    control0.G[4] = F;
+    control0.G[5] = N;
+    
+    for(int i = 0;i < 6;i++)
+    {
+      normals[i].showArrowAt(control0.G[i]);
+    }
+  }
+  else
+  {
+    centers1.G[0] = A;
+    centers1.G[1] = X;
+    centers1.G[2] = Y;
+    centers1.G[3] = C;
+    centers1.G[4] = Z;
+    centers1.G[5] = W;
+    
+    control1.G[0] = B;
+    control1.G[1] = E;
+    control1.G[2] = M;
+    control1.G[3] = D;
+    control1.G[4] = F;
+    control1.G[5] = N;
+    
+    for(int i = 0;i < 6;i++)
+    {
+      normals[i].showArrowAt(control1.G[i]);
+    }
+  }
+  
+  // MEDIAL AXIS
+  //int transversals = 40;
+  //float totalArc = purpleArc + orangeArc;
+  //float u = totalArc/(transversals);
+  //int orangeTrans = int(orangeArc/u);
+  //float theta = u/z;
+  //pts Arc = new pts();
+  //Arc.declare();
+  //pts orangeTraversalPts = new pts();
+  //orangeTraversalPts.declare();
+  //pts purpleTraversalPts = new pts();
+  //purpleTraversalPts.declare();
+  //pts cTraversalPts = new pts();
+  //cTraversalPts.declare();
+  //pts aTraversalPts = new pts();
+  //aTraversalPts.declare();
+  ////beginShape();
+  ////stroke(black);
+  ////noFill();
+  //float DCM =angle(V(C,M),V(C,D));
+  //if (DCM<0) DCM+=TWO_PI;
+  //pt Ci=P(C,R(V(C,D),-1*(DCM)/2));
+  ////v(Ci);
+  ////v(C);
+  //for (int i=1; i<=orangeTrans; i++) { //arcs starting from orange arc
+  //  vec ZU = R(V(Z,D),(theta*i));
+  //  pt U = P(Z,ZU);
+    
+  //  vec YU = V(Y,U);
+  //  T = U(V(Z,U));
+  //  if (z<0) T=M(T);
+  //  float d = (y*y - n2(YU))/(2*(dot(YU,T) - y));
+  //  pt Ma = P(U,T.scaleBy(d));
+    
+  //  vec YV = U(V(Y,Ma));
+  //  if (y<0) YV=M(YV);
+  //  YV.scaleBy(y);
+  //  pt V = P(Y,YV);
+    
+  //  float det = det(V(U,V),V(V,E))*det(V(U,V),V(V,M));
+    
+  //  if (det<0){ //green arc
+  //    //v(Ma);
+  //  }
+  //  else if (det>0){ // blue arc
+  //    vec XU = V(X,U);
+  //    T = U(V(Z,U));
+  //    if (z<0) T=M(T);
+  //    d = (x*x - n2(XU))/(2*(dot(XU,T) - x));
+  //    Ma = P(U,T.scaleBy(d));
+      
+  //    vec XV = U(V(X,Ma));
+  //    if (x<0) XV=M(XV);
+  //    XV.scaleBy(x);
+  //    V = P(X,XV);
+  //    //v(Ma);
+  //  }
+  //  Arc.addPt(V);
+  //  Arc.addPt(Ma);
+  //  Arc.addPt(U);
+    
+  //  third.addPt(V);
+  //  second.addPt(U);
+  //}
+  
+  //// calculate medial axis from points on the purple arc
+  //int purpleTrans = transversals - orangeTrans - 1; 
+  //theta = u/w;
+  //for (int i=purpleTrans; i>=1; i--) { //arcs starting from purple arc
+  //  vec WU = R(V(W,N),(theta*i*-1));
+  //  pt U = P(W,WU);
+    
+  //  vec XU = V(X,U);
+  //  T = U(V(W,U));
+  //  if (w<0) T=M(T);
+  //  float d = (x*x - n2(XU))/(2*(dot(XU,T) - x));
+  //  pt Ma = P(U,T.scaleBy(d));
+    
+  //  vec XV = U(V(X,Ma));
+  //  if (x<0) XV=M(XV);
+  //  XV.scaleBy(x);
+  //  pt V = P(X,XV);
+    
+  //  float det = det(V(U,V),V(V,B))*det(V(U,V),V(V,E));
+    
+  //  if (det<0){ //blue arc
+  //    //v(Ma);
+  //  }
+  //  else if (det>0){ // green arc
+  //    vec YU = V(Y,U);
+  //    T = U(V(W,U));
+  //    if (w<0) T=M(T);
+  //    d = (y*y - n2(YU))/(2*(dot(YU,T) - y));
+  //    Ma = P(U,T.scaleBy(d));
+      
+  //    vec YV = U(V(Y,Ma));
+  //    if (y<0) YV=M(YV);
+  //    YV.scaleBy(y);
+  //    V = P(Y,YV);
+  //    //v(Ma);
+  //  }
+  //  Arc.addPt(V);
+  //  Arc.addPt(Ma);
+  //  Arc.addPt(U);
+    
+  //  third.addPt(V);
+  //  second.addPt(U);
+    
+  //}  
+  ////v(A);
+  //float BAN =angle(V(A,N),V(A,B));
+  //if (BAN<0) BAN+=TWO_PI;
+  //pt Ai=P(A,R(V(A,B),-1*(BAN)/2));
+  ////v(Ai);
+  ////endShape();
+  
+  //pts P1 = new pts();
+  //P1.declare();
+  //for(int i = 0;i < first.nv;i++)
+  //{
+  //  P1.addPt(first.G[i]);
+  //}
+  //for(int i = third.nv-1;i >= 0;i--)
+  //{
+  //  P1.addPt(third.G[i]);
+  //}
+  //for(int i = 0;i < second.nv;i++)
+  //{
+  //  P1.addPt(second.G[i]);
+  //}
+  return normals;
+}
